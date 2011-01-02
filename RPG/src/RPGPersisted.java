@@ -13,14 +13,19 @@ public abstract class RPGPersisted
 {
 	protected boolean dirty = false;
 	
-	protected abstract void onSave(PreparedStatement ps);
-	protected abstract void onLoad(ResultSet rs);
-	protected abstract String getId();
-	
-	private static final List<String> fields = new ArrayList<String>();
-
-	private static void findFields(Class<RPGPersisted> objectClass)
+	protected void onSave(PreparedStatement ps)
 	{
+		
+	}
+	
+	protected void onLoad(ResultSet rs)
+	{
+		
+	}
+	
+	private static Field findFields(List<String> fields, Class<RPGPersisted> objectClass)
+	{
+		Field idField = null;
 		for (Field field : objectClass.getFields())
 		{
 			RPGPersist persist = field.getAnnotation(RPGPersist.class);
@@ -29,53 +34,59 @@ public abstract class RPGPersisted
 				RPG.getRPG().log(Level.INFO, "Persisting field " + field.getName() + " of class " + objectClass.getName());
 				fields.add(field.getName());
 			}
-		}
-	}
-	
-	protected static String listFields()
-	{
-		String sql = "";
-		boolean first = true;
-		for (String field : fields)
-		{
-			if (!first) sql += ", ";
-			first = false;
-			sql += field;
-		}
-		return sql;
-	}
-	
-	public static void load(Connection conn, String tableName, HashMap<String, RPGPersisted> objects, Class<RPGPersisted> objectClass)
-	{
-		if (fields.size() <= 0)
-		{
-			findFields(objectClass);
-			if (fields.size() <= 0) 
+			RPGPersistId persistId = field.getAnnotation(RPGPersistId.class);
+			if (persistId != null)
 			{
-				RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + objectClass.getName());
-				return;
+				idField = field;
 			}
 		}
+		return idField;
+	}
+	
+	//TODO is there a cleaner way to instantiate these objects?
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void load(Connection conn, String tableName, HashMap<String, RPGPersisted> objects, Class objectClass)
+	{
+		if (objects.size() <= 0) return;
 		
+		List<String> fields = new ArrayList<String>();
+		Field idField = findFields(fields, objectClass);
+		if (fields.size() <= 0) 
+		{
+				RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + objectClass.getName());
+				return;
+		}
+		if (idField == null)
+		{
+			RPG.getRPG().log(Level.WARNING, "No id field defined for persisted class: " + objectClass.getName());
+			return;
+		}
+
 		PreparedStatement ps = null;
 		ResultSet rs = null;		
 		try 
         {
 			String sqlSelect = "SELECT ";
-			sqlSelect += listFields();
+			boolean first = true;
+			for (String field : fields)
+			{
+				if (!first) sqlSelect += ", ";
+				first = false;
+				sqlSelect += field;
+			}
 			sqlSelect += " FROM " + tableName;
 			ps = conn.prepareStatement(sqlSelect);
             rs = ps.executeQuery();
             while (rs.next()) 
             {
-                RPGPersisted newObject = objectClass.newInstance();
+                RPGPersisted newObject = (RPGPersisted)objectClass.newInstance();
                 for (String field : fields)
                 {
                 	objectClass.getField(field).set(newObject, rs.getObject(field));
                 }
                 newObject.onLoad(rs);
                 newObject.dirty = false;
-                objects.put(newObject.getId(), newObject);
+                objects.put(idField.get(newObject).toString(), newObject);
             }     
 		}
 		catch (Exception ex) 
@@ -103,7 +114,19 @@ public abstract class RPGPersisted
 	
 	public void save(Connection conn, String tableName, HashMap<String, RPGPersisted> objects)
 	{
-		if (fields.size() <= 0) return;
+		if (objects.size() <= 0) return;
+	
+		// TODO: How to do this correctly?
+		@SuppressWarnings("unchecked")
+		Class<RPGPersisted> objectClass = (Class<RPGPersisted>)objects.values().iterator().next().getClass();
+	
+		List<String> fields = new ArrayList<String>();
+		findFields(fields, objectClass);
+		if (fields.size() <= 0) 
+		{
+				RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + objectClass.getName());
+				return;
+		}
 		
 		for(RPGPersisted object : objects.values())
 		{

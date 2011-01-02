@@ -1,3 +1,5 @@
+import java.sql.Connection;
+
 
 public abstract class RPGPlugin extends Plugin   
 {
@@ -30,14 +32,12 @@ public abstract class RPGPlugin extends Plugin
 		getListener().disable();
 	}
 	
-	public void load()
+	public void load(Connection conn)
 	{
-		getListener().load();
 	}
 
-	public void save()
+	public void save(Connection conn)
 	{
-		getListener().save();
 	}
 	
 	public abstract RPGPluginListener getListener();

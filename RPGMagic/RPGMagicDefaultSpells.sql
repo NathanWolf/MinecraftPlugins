@@ -12,18 +12,18 @@
 -- Default data for rpg_magic
 --
 
-SET @text = '/spell blink';
+SET @command = '/spell blink';
 SET @name = 'blink';
-INSERT INTO rpg_text (name, command) VALUES (@name, @command)
+INSERT INTO rpg_magic (name, command) VALUES (@name, @command)
 	ON DUPLICATE KEY UPDATE name = @name, command = @command;
 
-SET @text = '/spell heal';
+SET @command = '/spell heal';
 SET @name = 'heal';
-INSERT INTO rpg_text (name, command) VALUES (@name, @command)
+INSERT INTO rpg_magic (name, command) VALUES (@name, @command)
 	ON DUPLICATE KEY UPDATE name = @name, command = @command;
 	
-SET @text = '/time day';
+SET @command = '/time day';
 SET @name = 'day';
-INSERT INTO rpg_text (name, command) VALUES (@name, @command)
+INSERT INTO rpg_magic (name, command) VALUES (@name, @command)
 	ON DUPLICATE KEY UPDATE name = @name, command = @command;
 	

@@ -25,12 +25,4 @@ public abstract class RPGPluginListener extends PluginListener
 	{
 	}
 	
-	public void save() 
-	{
-	}
-	
-	public void load() 
-	{
-	}
-	
 }

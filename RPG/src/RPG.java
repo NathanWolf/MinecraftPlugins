@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 */
 public class RPG extends RPGPlugin  
 {
-	private String version = "0.29";
+	private String version = "0.31";
 
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -29,7 +29,7 @@ public class RPG extends RPGPlugin
 	private HashMap<String, RPGPlugin> plugins = new HashMap<String, RPGPlugin>();
 	private HashMap<RPGTextId, String> text = new HashMap<RPGTextId, String>();
 	
-	private String prefix;
+	private String prefix = "";
 	
 	private final RPGMainListener listener = new RPGMainListener();
 
@@ -75,6 +75,9 @@ public class RPG extends RPGPlugin
 				plugin.enable();
 			}
         }
+		
+		// Reload everything, to give plugins a chance to load.
+		load();
 	}
 	
 	public void disable() 
@@ -152,7 +155,6 @@ public class RPG extends RPGPlugin
 	protected void addPlugin(String pluginName, RPGPlugin plugin)
 	{
 		plugins.put(pluginName, plugin);
-		log(Level.INFO, "Loaded RPG plugin: " + pluginName);
 	}
 	
 	protected void removePlugin(String pluginName)
@@ -184,6 +186,14 @@ public class RPG extends RPGPlugin
             return;
 		}
 		savePlayers(conn);
+		super.save(conn);
+		synchronized(pluginsLock)
+		{
+			for (RPGPlugin plugin : plugins.values())
+			{
+				plugin.save(conn);
+			}
+		}
 		try
 		{
 			if (conn != null) 
@@ -193,14 +203,6 @@ public class RPG extends RPGPlugin
 		}
 		catch (SQLException ex) 
 		{
-		}
-		super.save();
-		synchronized(pluginsLock)
-		{
-			for (RPGPlugin plugin : plugins.values())
-			{
-				plugin.save();
-			}
 		}
 	}
 	
@@ -265,6 +267,14 @@ public class RPG extends RPGPlugin
 		}
 		loadText(conn);
 		loadPlayers(conn);
+		super.load(conn);
+		synchronized(pluginsLock)
+		{
+			for (RPGPlugin plugin : plugins.values())
+			{
+				plugin.load(conn);
+			}
+		}
 		try
 		{
 			if (conn != null) 
@@ -274,14 +284,6 @@ public class RPG extends RPGPlugin
 		}
 		catch (SQLException ex) 
 		{
-		}
-		super.load();
-		synchronized(pluginsLock)
-		{
-			for (RPGPlugin plugin : plugins.values())
-			{
-				plugin.load();
-			}
 		}
 	}
 	

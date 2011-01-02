@@ -5,9 +5,11 @@ import java.util.logging.Level;
 
 public class RPGMagic extends RPGPlugin
 {
+	private static String TABLE_MAGIC = "rpg_magic";
+	
 	public final RPGMagicListener listener = new RPGMagicListener();
 	
-	private final HashMap<String, RPGCommand> commands = new HashMap<String, RPGCommand>();
+	private final HashMap<String, RPGPersisted> commands = new HashMap<String, RPGPersisted>();
 	private final Object commandsLock = new Object();
 	
 	public RPGPluginListener getListener()
@@ -19,8 +21,15 @@ public class RPGMagic extends RPGPlugin
 	{
 		synchronized(commandsLock)
 		{	
-	        RPGCommand.loadCommands(commands, conn, TABLE_PLAYERS);
-	        log(Level.INFO, "Loaded " + players.values().size() + " players");
+	        RPGCommand.load(conn, TABLE_MAGIC, commands, RPGCommand.class);
+	        RPG.getRPG().log(Level.INFO, "Loaded " + commands.values().size() + " commands");
 		}	
+	}
+	
+	public void load(Connection conn)
+	{
+		super.load(conn);
+		
+		loadCommands(conn);
 	}
 }

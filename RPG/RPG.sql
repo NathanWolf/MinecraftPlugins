@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `rpg_text`
 -- Table structure for table `rpg_magic`
 --
 
-CREATE TABLE IF NOT EXISTS `rpg_magic ` 
+CREATE TABLE IF NOT EXISTS `rpg_magic` 
 (
   `name` varchar(32) NOT NULL,
-  `command` varchar(255) NOT NULL
+  `command` varchar(255) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB;
