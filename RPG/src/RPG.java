@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 *
 * @author NathanWolf
 */
-public class RPG extends RPGPlugin  
+public class RPG extends RPGPlugin
 {
-	private String version = "0.31";
+	public String version = "0.38";
 
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -55,9 +55,6 @@ public class RPG extends RPGPlugin
 		TABLE_TEXT = properties.getString("table-text", TABLE_TEXT);
 		TABLE_PLAYERS = properties.getString("table-players", TABLE_PLAYERS);
 		
-		// Load database data
-		load();
-		
 		// Load plugins
 		String pluginText = properties.getString("plugins");
 		String[] pluginSplit = pluginText.split(",");
@@ -65,6 +62,9 @@ public class RPG extends RPGPlugin
 		{
 			loadPlugin(pluginName);
 		}
+		
+		// Load database data
+		load();
 	
 		// Enable base and plugins
 		super.enable();
@@ -75,9 +75,6 @@ public class RPG extends RPGPlugin
 				plugin.enable();
 			}
         }
-		
-		// Reload everything, to give plugins a chance to load.
-		load();
 	}
 	
 	public void disable() 
@@ -253,7 +250,7 @@ public class RPG extends RPGPlugin
 		synchronized(playersLock)
 		{	
 	        RPGPlayer.loadPlayers(players, conn, TABLE_PLAYERS);
-	        log(Level.INFO, "Loaded " + players.values().size() + " players");
+	        RPG.getRPG().log(Level.INFO, "Loaded " + players.values().size() + " players");
 		}	
 	}
 	
@@ -291,10 +288,7 @@ public class RPG extends RPGPlugin
 	{
 		synchronized(playersLock)
 		{	
-			for (RPGPlayer player : players.values())
-			{
-				playerList.add(player);
-			}
+			playerList.addAll(players.values());
 		}
 	}
 

@@ -23,6 +23,7 @@ public abstract class RPGPlugin extends Plugin
 	public void enable()
 	{
 		rpg = RPGPlugin.getRPG();
+		getListener().setPlugin(this, rpg);
 		getListener().enable();
 	}
 

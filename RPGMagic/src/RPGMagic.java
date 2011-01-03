@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 
@@ -9,7 +10,7 @@ public class RPGMagic extends RPGPlugin
 	
 	public final RPGMagicListener listener = new RPGMagicListener();
 	
-	private final HashMap<String, RPGPersisted> commands = new HashMap<String, RPGPersisted>();
+	private final HashMap<String, RPGCommand> commands = new HashMap<String, RPGCommand>();
 	private final Object commandsLock = new Object();
 	
 	public RPGPluginListener getListener()
@@ -21,7 +22,8 @@ public class RPGMagic extends RPGPlugin
 	{
 		synchronized(commandsLock)
 		{	
-	        RPGCommand.load(conn, TABLE_MAGIC, commands, RPGCommand.class);
+			RPGCommand loader = new RPGCommand();
+	        loader.load(conn, TABLE_MAGIC, commands);
 	        RPG.getRPG().log(Level.INFO, "Loaded " + commands.values().size() + " commands");
 		}	
 	}
@@ -32,4 +34,23 @@ public class RPGMagic extends RPGPlugin
 		
 		loadCommands(conn);
 	}
+	
+	public void getCommands(List<RPGCommand> commandList)
+	{
+		synchronized(commandsLock)
+		{
+			commandList.addAll(commands.values());
+		}
+	}
+	
+	public RPGCommand getCommand(String commandName)
+	{
+		RPGCommand command = null;
+		synchronized(commandsLock)
+		{
+			command = commands.get(commandName);
+		}
+		return command;
+	}
+
 }

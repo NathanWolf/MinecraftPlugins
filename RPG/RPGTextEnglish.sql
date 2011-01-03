@@ -103,4 +103,15 @@ SET @text = 'Your health is already full';
 SET @index := @index + 1;
 INSERT INTO rpg_text (id, text) VALUES (@index, @text)
 	ON DUPLICATE KEY UPDATE id = @index, text = @text;
-		
+	
+-- Help text for "magic" entry
+SET @text = 'Cast magic spells';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+-- Magic spell list
+SET @text = 'Available spells:';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;

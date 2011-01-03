@@ -14,16 +14,19 @@
 
 SET @command = '/spell blink';
 SET @name = 'blink';
-INSERT INTO rpg_magic (name, command) VALUES (@name, @command)
-	ON DUPLICATE KEY UPDATE name = @name, command = @command;
+SET @description = 'Teleport to the target location';
+INSERT INTO rpg_magic (name, command, description) VALUES (@name, @command, @description)
+	ON DUPLICATE KEY UPDATE name = @name, command = @command, description = @description;
 
 SET @command = '/spell heal';
 SET @name = 'heal';
-INSERT INTO rpg_magic (name, command) VALUES (@name, @command)
-	ON DUPLICATE KEY UPDATE name = @name, command = @command;
+SET @description = 'Heal yourself';
+INSERT INTO rpg_magic (name, command, description) VALUES (@name, @command, @description)
+	ON DUPLICATE KEY UPDATE name = @name, command = @command, description = @description;
 	
 SET @command = '/time day';
 SET @name = 'day';
-INSERT INTO rpg_magic (name, command) VALUES (@name, @command)
-	ON DUPLICATE KEY UPDATE name = @name, command = @command;
+SET @description = 'Change the time to mid day';
+INSERT INTO rpg_magic (name, command, description) VALUES (@name, @command, @description)
+	ON DUPLICATE KEY UPDATE name = @name, command = @command, description = @description;
 	

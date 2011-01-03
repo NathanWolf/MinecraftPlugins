@@ -4,14 +4,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-
 
 public abstract class RPGPersisted
 {
 	protected boolean dirty = false;
+	protected List<Field> fields = new ArrayList<Field>();
+	protected Field idField;
+	
+	public RPGPersisted()
+	{
+	}
 	
 	protected void onSave(PreparedStatement ps)
 	{
@@ -23,42 +27,30 @@ public abstract class RPGPersisted
 		
 	}
 	
-	private static Field findFields(List<String> fields, Class<RPGPersisted> objectClass)
+	private void findFields()
 	{
-		Field idField = null;
-		for (Field field : objectClass.getFields())
+		idField = null;
+		
+		for (Field field : this.getClass().getDeclaredFields())
 		{
 			RPGPersist persist = field.getAnnotation(RPGPersist.class);
 			if (persist != null)
 			{
-				RPG.getRPG().log(Level.INFO, "Persisting field " + field.getName() + " of class " + objectClass.getName());
-				fields.add(field.getName());
-			}
-			RPGPersistId persistId = field.getAnnotation(RPGPersistId.class);
-			if (persistId != null)
-			{
-				idField = field;
+				fields.add(field);
+				if (persist.id())
+				{
+					idField = field;
+				}
 			}
 		}
-		return idField;
 	}
 	
-	//TODO is there a cleaner way to instantiate these objects?
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void load(Connection conn, String tableName, HashMap<String, RPGPersisted> objects, Class objectClass)
+	public void load(Connection conn, String tableName, List<RPGPersisted> objects)
 	{
-		if (objects.size() <= 0) return;
-		
-		List<String> fields = new ArrayList<String>();
-		Field idField = findFields(fields, objectClass);
+		findFields();
 		if (fields.size() <= 0) 
 		{
-				RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + objectClass.getName());
-				return;
-		}
-		if (idField == null)
-		{
-			RPG.getRPG().log(Level.WARNING, "No id field defined for persisted class: " + objectClass.getName());
+			RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + getClass().getName());
 			return;
 		}
 
@@ -68,30 +60,30 @@ public abstract class RPGPersisted
         {
 			String sqlSelect = "SELECT ";
 			boolean first = true;
-			for (String field : fields)
+			for (Field field : fields)
 			{
 				if (!first) sqlSelect += ", ";
 				first = false;
-				sqlSelect += field;
+				sqlSelect += field.getName();
 			}
 			sqlSelect += " FROM " + tableName;
 			ps = conn.prepareStatement(sqlSelect);
             rs = ps.executeQuery();
             while (rs.next()) 
             {
-                RPGPersisted newObject = (RPGPersisted)objectClass.newInstance();
-                for (String field : fields)
+                RPGPersisted newObject = (RPGPersisted)this.getClass().newInstance();
+                for (Field field : fields)
                 {
-                	objectClass.getField(field).set(newObject, rs.getObject(field));
+                	field.set(newObject, rs.getObject(field.getName()));
                 }
                 newObject.onLoad(rs);
                 newObject.dirty = false;
-                objects.put(idField.get(newObject).toString(), newObject);
+                objects.add(newObject);
             }     
 		}
 		catch (Exception ex) 
         {
-			RPG.getRPG().log(Level.SEVERE, "Error loading players", ex);
+			RPG.getRPG().log(Level.SEVERE, "Error loading persisted class " + this.getClass().getName(), ex);
         } 
         finally 
         {
@@ -112,23 +104,18 @@ public abstract class RPGPersisted
         }
 	}
 	
-	public void save(Connection conn, String tableName, HashMap<String, RPGPersisted> objects)
+	public void save(Connection conn, String tableName, List<RPGPersisted> objects)
 	{
+		findFields();
 		if (objects.size() <= 0) return;
 	
-		// TODO: How to do this correctly?
-		@SuppressWarnings("unchecked")
-		Class<RPGPersisted> objectClass = (Class<RPGPersisted>)objects.values().iterator().next().getClass();
-	
-		List<String> fields = new ArrayList<String>();
-		findFields(fields, objectClass);
 		if (fields.size() <= 0) 
 		{
-				RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + objectClass.getName());
+				RPG.getRPG().log(Level.WARNING, "No fields defined for persisted class: " + this.getClass().getName());
 				return;
 		}
 		
-		for(RPGPersisted object : objects.values())
+		for(RPGPersisted object : objects)
 		{
 			if (object.dirty)
 			{
@@ -141,7 +128,7 @@ public abstract class RPGPersisted
 					String updateList = "";
 					
 					boolean first = true;
-					for (String field : fields)
+					for (Field field : fields)
 					{
 						if (!first) 
 						{
@@ -150,9 +137,9 @@ public abstract class RPGPersisted
 							updateList += ", ";
 						}
 						first = false;
-						fieldList += field;
+						fieldList += field.getName();
 						valueList += "?";
-						updateList += field + " = ?";
+						updateList += field.getName() + " = ?";
 					}
 					
 					String sqlUpdate = 
@@ -167,9 +154,9 @@ public abstract class RPGPersisted
 					
 					ps = conn.prepareStatement(sqlUpdate);
 					int index = 0;
-					for (String field : fields)
+					for (Field field : fields)
 	                {
-						Object value = object.getClass().getField(field).get(field);
+						Object value = field.get(field);
 						ps.setObject(index, value);
 						ps.setObject(index + fields.size(), value);
 	                }
@@ -179,7 +166,7 @@ public abstract class RPGPersisted
 		        }
 				catch (Exception ex) 
 		        {
-					RPG.getRPG().log(Level.SEVERE, "Error updating or inserting player", ex);
+					RPG.getRPG().log(Level.SEVERE, "Error updating or inserting persisted class " + getClass().getName(), ex);
 		        } 
 		        finally 
 		        {
@@ -201,7 +188,6 @@ public abstract class RPGPersisted
 			}
 		}
 	}
-	
 	
 	public boolean isDirty()
 	{

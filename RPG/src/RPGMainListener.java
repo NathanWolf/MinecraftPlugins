@@ -8,6 +8,7 @@ public class RPGMainListener extends RPGPluginListener
 {	
 	private static String RPG_COMMAND = "rpg";
 	private static String PLAYERS_COMMAND = "players";
+	private boolean showHelp = true;
 	
 	public boolean onCommand(Player player, String[] command) 
 	{
@@ -101,17 +102,24 @@ public class RPGMainListener extends RPGPluginListener
 		PropertiesFile properties = new PropertiesFile("rpg.properties");
 		RPG_COMMAND = properties.getString("command-rpg", RPG_COMMAND);
 		PLAYERS_COMMAND = properties.getString("command-players", PLAYERS_COMMAND);
+		showHelp = properties.getBoolean("show-magic-help", showHelp);
 		
-		etc inst = etc.getInstance();
-		inst.addCommand("/" + RPG_COMMAND, rpg.getText(RPGTextId.help));
+		if (showHelp)
+		{
+			etc inst = etc.getInstance();
+			inst.addCommand("/" + RPG_COMMAND, rpg.getText(RPGTextId.help));
+		}
 	}
 	
 	public void disable()
 	{
 		super.disable();
 		
-		etc inst = etc.getInstance();
-		inst.removeCommand("/" + RPG_COMMAND);		
+		if (showHelp)
+		{
+			etc inst = etc.getInstance();
+			inst.removeCommand("/" + RPG_COMMAND);
+		}
 	}
 
 }

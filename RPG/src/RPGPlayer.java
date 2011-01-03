@@ -145,7 +145,6 @@ public class RPGPlayer
                 RPGPlayer newPlayer = new RPGPlayer();
                 newPlayer.load(rs);
                 players.put(newPlayer.name, newPlayer);
-                RPG.getRPG().log(Level.INFO, "Loaded player " + newPlayer.getName());
             }     
 		}
 		catch (SQLException ex) 

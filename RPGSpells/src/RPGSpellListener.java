@@ -76,7 +76,7 @@ public class RPGSpellListener extends RPGPluginListener
 				String [] castUsage = rpg.getText(RPGTextId.castUsage).split("@");
 				for (int i = 0; i < castUsage.length; i++) 
 				{
-					rpg.sendMessage(player, Colors.White, castUsage[i]);
+					rpg.sendMessage(player, RPG.INFO_COLOR, castUsage[i]);
 				}
 			}
 			return true;

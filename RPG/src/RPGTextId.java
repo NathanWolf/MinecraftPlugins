@@ -14,5 +14,7 @@ public enum RPGTextId
 	viewBlink,		// 11
 	castHeal,		// 12
 	viewHeal,		// 13
-	healFullHealth	// 14
+	healFullHealth,	// 14
+	magicHelp,		// 15
+	magicSpellList,	// 16
 }
