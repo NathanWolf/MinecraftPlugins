@@ -1,3 +1,18 @@
 RPG
 
-Todo : a quick readme!
+This is a framework for the hMod minecraft server that will enable RPG-like functionality in your game.
+
+___RPG REQUIRES MYSQL___
+
+The basic RPG plugin has little functionality, it is meant to be a plugin framework itself. Currently, RPG tracks each player's login times.
+The only built-in command available is /rpg players, which lists all players in the system, and the last time they were logged in.
+
+RPGMagic plugin
+
+RPGMagic is a command-shortcut system. Commands such as "/time day" can be made into "spells", with a name, description, casting cost, etc. Eventually this will be incorporated into an experience/levelling system, but for now RPGMagic is basically a glorified macro system.
+
+RPGSpells plugin
+
+RPGSpells is a collection of spells taken from MagicSpells and MagicTricks and made to work "better" or more directly within the RPG framework.
+
+
