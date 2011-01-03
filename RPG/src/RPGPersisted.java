@@ -10,6 +10,7 @@ import java.util.logging.Level;
 public abstract class RPGPersisted
 {
 	protected boolean dirty = false;
+	
 	protected List<Field> fields = new ArrayList<Field>();
 	protected Field idField;
 	
@@ -27,7 +28,7 @@ public abstract class RPGPersisted
 		
 	}
 	
-	private void findFields()
+	protected void findFields()
 	{
 		idField = null;
 		
@@ -193,4 +194,10 @@ public abstract class RPGPersisted
 	{
 		return dirty;
 	}
+	
+	public void setDirty(boolean dirty)
+	{
+		this.dirty = dirty;
+	}
+	
 }

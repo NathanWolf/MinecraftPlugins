@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 */
 public class RPG extends RPGPlugin
 {
-	public String version = "0.38";
+	public String version = "0.40";
 
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -167,10 +167,7 @@ public class RPG extends RPGPlugin
 	{
 		synchronized(playersLock)
 		{
-        	for (RPGPlayer rpgPlayer : players.values())
-			{
-        		rpgPlayer.save(conn, TABLE_PLAYERS);
-            }
+			RPGPlayer.save(conn, TABLE_PLAYERS, players);
 		}
 	}
 	
@@ -249,7 +246,7 @@ public class RPG extends RPGPlugin
 	{
 		synchronized(playersLock)
 		{	
-	        RPGPlayer.loadPlayers(players, conn, TABLE_PLAYERS);
+	        RPGPlayer.load(conn, TABLE_PLAYERS, players);
 	        RPG.getRPG().log(Level.INFO, "Loaded " + players.values().size() + " players");
 		}	
 	}
@@ -318,6 +315,16 @@ public class RPG extends RPGPlugin
 			{
 				log(Level.INFO, "Player " + player.getName() + " joined, RPG profile loaded");
 			}
+		}
+		return rpgPlayer;
+	}
+	
+	public RPGPlayer findPlayer(String playerName)
+	{
+		RPGPlayer rpgPlayer = null;
+		synchronized(playersLock)
+		{
+			rpgPlayer = players.get(playerName);
 		}
 		return rpgPlayer;
 	}

@@ -22,8 +22,7 @@ public class RPGMagic extends RPGPlugin
 	{
 		synchronized(commandsLock)
 		{	
-			RPGCommand loader = new RPGCommand();
-	        loader.load(conn, TABLE_MAGIC, commands);
+	        RPGCommand.load(conn, TABLE_MAGIC, commands);
 	        RPG.getRPG().log(Level.INFO, "Loaded " + commands.values().size() + " commands");
 		}	
 	}

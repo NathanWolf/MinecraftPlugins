@@ -4,45 +4,44 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class RPGCommand extends RPGPersisted
-{
-	@RPGPersist(id = true)
-	public String name;
+public class RPGCommand
+{	
+	protected RPGCommandDAO dao;
 	
-	@RPGPersist
-	public String command;
+	public RPGCommand()
+	{
+		dao = new RPGCommandDAO();
+	}
 	
-	@RPGPersist
-	public String description;
-	
-	@RPGPersist
-	public double initialCost;
-	
-	@RPGPersist
-	public double costPerSecond;
+	public RPGCommand(RPGCommandDAO dao)
+	{
+		this.dao = dao;
+	}
 	
 	public String getName()
 	{
-		return name;
+		return dao.name;
 	}
 	
 	public String getDescription()
 	{
-		return description;
+		return dao.description;
 	}
 	
 	public String getCommand()
 	{
-		return command;
+		return dao.command;
 	}
 	
-	public void load(Connection conn, String tableName, HashMap<String, RPGCommand> commandMap)
+	public static void load(Connection conn, String tableName, HashMap<String, RPGCommand> commandMap)
 	{
 		List<RPGPersisted> objects = new ArrayList<RPGPersisted>();
-		load(conn, tableName, objects);
+		RPGCommandDAO loader = new RPGCommandDAO();
+		loader.load(conn, tableName, objects);
 		for (RPGPersisted o : objects)
 		{
-			RPGCommand command = (RPGCommand)o;
+			RPGCommandDAO dao = (RPGCommandDAO)o;
+			RPGCommand command = new RPGCommand(dao);
 			commandMap.put(command.getName(), command); 
 		}
 	}
