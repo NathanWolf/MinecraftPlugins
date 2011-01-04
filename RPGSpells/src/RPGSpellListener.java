@@ -25,6 +25,8 @@ public class RPGSpellListener extends RPGPluginListener
 			etc inst = etc.getInstance();
 			inst.addCommand("/" + SPELL_COMMAND, rpg.getText(RPGTextId.castHelp));
 		}
+
+		rpg.log(Level.INFO, "RPG Spell plugin enabled");
 	}
 	
 	public void disable()
@@ -44,7 +46,6 @@ public class RPGSpellListener extends RPGPluginListener
 		
 		// Self-register
 		etc.getLoader().addListener(PluginLoader.Hook.COMMAND, this, rpg, PluginListener.Priority.MEDIUM);
-		rpg.log(Level.INFO, "RPG Spell plugin initialized");
 	}
 	
 	public boolean onCommand(Player player, String[] command) 

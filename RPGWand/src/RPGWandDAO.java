@@ -1,9 +1,10 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class RPGWandDAO extends RPGPersisted
 {
 	@RPGPersist(id = true)
-	public int id;
+	public long id;
 	
 	@RPGPersist
 	public String playerName;
@@ -12,12 +13,28 @@ public class RPGWandDAO extends RPGPersisted
 	public String name;
 
 	@RPGPersist
-	public int currentCommandId;
+	public String description;
 	
 	@RPGPersist
-	public int order;
+	public Long currentCommandId;
+	
+	@RPGPersist
+	public int listOrder;
+	
+	public RPGWandDAO()
+	{
+		commands = new ArrayList<RPGWandCommandDAO>();
+	}
 	
 	public List<RPGWandCommandDAO> commands;
 	public RPGWandCommandDAO currentCommand;
 	
+	public void nextCommand()
+	{
+		int indexOfCurrent = commands.indexOf(currentCommand);
+		indexOfCurrent = (indexOfCurrent + 1) % commands.size();
+		currentCommand = commands.get(indexOfCurrent);
+		currentCommandId = currentCommand.id;
+		dirty = true;
+	}
 }

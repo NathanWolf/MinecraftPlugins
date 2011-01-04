@@ -19,7 +19,9 @@ public class RPGMagicListener extends RPGPluginListener
 		{
 			etc inst = etc.getInstance();
 			inst.addCommand("/" + MAGIC_COMMAND, rpg.getText(RPGTextId.magicHelp));
-		}	
+		}
+
+		rpg.log(Level.INFO, "RPG Magic plugin enabled");
 	}
 	
 	public void disable()
@@ -35,10 +37,9 @@ public class RPGMagicListener extends RPGPluginListener
 	{
 		// Self-register
 		etc.getLoader().addListener(PluginLoader.Hook.COMMAND, this, rpg, PluginListener.Priority.MEDIUM);
-		rpg.log(Level.INFO, "RPG Magic plugin initialized");
 	}
 	
-	public boolean onCommand(Player player, String[] command) 
+	public boolean onCommand(Player player, String[] commandLine) 
 	{	
 		RPGMagic magic = (RPGMagic)plugin;
 		if (magic == null)
@@ -46,19 +47,19 @@ public class RPGMagicListener extends RPGPluginListener
 			rpg.log(Level.SEVERE, "Missing or incompatible RPGMagic plugin");
 			return false;
 		}
-		if (command[0].equalsIgnoreCase("/" + MAGIC_COMMAND))
+		if (commandLine[0].equalsIgnoreCase("/" + MAGIC_COMMAND))
 		{
-			RPGCommand rpgCommand = null;
+			RPGCommand command = null;
 			String commandName = "";
-			if (command.length > 1)
+			if (commandLine.length > 1)
 			{
-				commandName = command[1];
-				rpgCommand = magic.getCommand(commandName);
+				commandName = commandLine[1];
+				command = magic.getCommand(commandName);
 			}
 			
-			if (rpgCommand != null)
+			if (command != null)
 			{
-				String commandText = rpgCommand.getCommand(); 
+				String commandText = command.getCommand(); 
 				if (commandText == null || commandText.length() <=0)
 				{
 					rpg.log(Level.WARNING, "RPG command '" + commandName + "' missing command");

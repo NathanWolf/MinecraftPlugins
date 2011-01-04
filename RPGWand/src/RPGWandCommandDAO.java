@@ -1,14 +1,14 @@
 public class RPGWandCommandDAO extends RPGPersisted 
 {
 	@RPGPersist(id = true)
-	public int id;
+	public long id;
 	
 	@RPGPersist
-	public int wandId;
+	public Long wandId;
 	
 	@RPGPersist
 	public String command;
 	
 	@RPGPersist
-	public int order;
+	public int listOrder;
 }

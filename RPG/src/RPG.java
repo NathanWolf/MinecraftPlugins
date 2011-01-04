@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 */
 public class RPG extends RPGPlugin
 {
-	public String version = "0.40";
+	public String version = "0.46";
 
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -70,8 +70,10 @@ public class RPG extends RPGPlugin
 		super.enable();
 		synchronized (pluginsLock) 
         {
-			for (RPGPlugin plugin : plugins.values())
+			for (String pluginName : plugins.keySet())
 			{
+				RPGPlugin plugin = plugins.get(pluginName);
+				log(Level.INFO, "Loading RPG plugin " + pluginName);
 				plugin.enable();
 			}
         }
@@ -103,7 +105,6 @@ public class RPG extends RPGPlugin
 				plugin.initialize();
 			}
         }
-		log(Level.INFO, "RPG initialized");		
 	}
 	
 	protected boolean loadPlugin(String fileName)
@@ -112,7 +113,6 @@ public class RPG extends RPGPlugin
 		{
 			return false;
 		}
-		log(Level.INFO, "Loading RPG plugin " + fileName);
 		try
 		{
 			File file = new File("plugins/" + fileName + ".jar");
@@ -135,7 +135,6 @@ public class RPG extends RPGPlugin
 			@SuppressWarnings("unchecked")
             Class<RPGPlugin> c = (Class<RPGPlugin>)child.loadClass(fileName);
 			RPGPlugin plugin = (RPGPlugin) c.newInstance();
-            plugin.enable();
             synchronized (pluginsLock) 
             {
             	addPlugin(fileName, plugin);

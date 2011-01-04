@@ -30,6 +30,33 @@ public class RPGPlayerWand extends RPGPersisted
 		wands.wands.add(wand);
 		selectWand(wand);
 	}
+	
+	public void use(Player player)
+	{
+		if (wands.currentWand != null && wands.currentWand.currentCommand != null)
+		{
+			String command = wands.currentWand.currentCommand.command;
+			if (command != null)
+			{
+				if (command.length() > 0)
+				{
+					if (command.charAt(0) == '/')
+					{
+						command = "/cast " + command;
+					}
+					player.chat(wands.currentWand.currentCommand.command);
+				}
+			}
+		}
+	}
+	
+	public void nextCommand()
+	{
+		if (wands.currentWand != null)
+		{
+			wands.currentWand.nextCommand();
+		}
+	}
 
 	public static void load(Connection conn, String playerTableName, String wandTableName, String commandTableName, HashMap<RPGPlayer, RPGPlayerWand> wands)
 	{
@@ -41,37 +68,50 @@ public class RPGPlayerWand extends RPGPersisted
 		RPGWandDAO wandLoader = new RPGWandDAO();
 		RPGWandCommandDAO commandLoader = new RPGWandCommandDAO();
 		
-		playerLoader.load(conn, playerTableName, commandDAOList);
+		playerLoader.load(conn, playerTableName, playerDAOList);
 		wandLoader.load(conn, wandTableName, wandDAOList);
-		commandLoader.load(conn, commandTableName, playerDAOList);
-		
-		// Map wands by id
-		HashMap<Integer, RPGWandDAO> wandMap = new HashMap<Integer, RPGWandDAO>();
-		for (RPGPersisted o : wandDAOList)
-		{
-			RPGWandDAO wandDAO = (RPGWandDAO)o;
-			wandMap.put(wandDAO.id, wandDAO);
-		}
-		
-		// Map commands by id
-		HashMap<Integer, RPGWandCommandDAO> commandMap = new HashMap<Integer, RPGWandCommandDAO>();
-		for (RPGPersisted o : commandDAOList)
-		{
-			RPGWandCommandDAO commandDAO = (RPGWandCommandDAO)o;
-			commandMap.put(commandDAO.id, commandDAO);
-		}		
+		commandLoader.load(conn, commandTableName, commandDAOList);
 		
 		// Bind everything together
-		for (RPGPersisted o : playerDAOList)
+		for (RPGPersisted playerDAO : playerDAOList)
 		{
 			RPG rpg = RPG.getRPG();
-			RPGPlayerWandDAO playerDAO = (RPGPlayerWandDAO)o;
-			RPGPlayerWand playerWand = new RPGPlayerWand(playerDAO);
-			RPGPlayer player = rpg.findPlayer(playerDAO.playerName);
+			RPGPlayerWandDAO playerWandDAO = (RPGPlayerWandDAO)playerDAO;
+			
+			// Bind all the wands to the PlayerWand object
+			for (RPGPersisted wandDAO : wandDAOList)
+			{
+				RPGWandDAO wand = (RPGWandDAO)wandDAO;
+				if (wand.playerName.equalsIgnoreCase(playerWandDAO.playerName))
+				{
+					playerWandDAO.wands.add(wand);
+					if (playerWandDAO.currentWandId == null || wand.id == playerWandDAO.currentWandId)
+					{
+						playerWandDAO.currentWandId = wand.id;
+						playerWandDAO.currentWand = wand;
+					}
+					
+					// Bind commands to wand
+					for (RPGPersisted commandDAO : commandDAOList)
+					{
+						RPGWandCommandDAO command = (RPGWandCommandDAO)commandDAO;
+						wand.commands.add(command);
+						if (wand.currentCommandId == null || command.id == wand.currentCommandId)
+						{
+							wand.currentCommandId = command.id;
+							wand.currentCommand = command;
+						}
+					}							
+				}
+			}
+			
+			// Bind the PlayerWand object to its player
+			RPGPlayerWand playerWand = new RPGPlayerWand(playerWandDAO);
+			RPGPlayer player = rpg.findPlayer(playerWandDAO.playerName);
 			
 			if (player == null)
 			{
-				rpg.log(Level.WARNING, "Can't find player '" + playerDAO.playerName + "' for wand");
+				rpg.log(Level.WARNING, "Can't find player '" + playerWandDAO.playerName + "' for wand");
 				continue;
 			}
 			
@@ -79,4 +119,8 @@ public class RPGPlayerWand extends RPGPersisted
 		}
 	}
 	
+	public List<RPGWandDAO> getWands()
+	{
+		return wands.wands;
+	}
 }
