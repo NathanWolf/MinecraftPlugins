@@ -154,12 +154,21 @@ public abstract class RPGPersisted
 					+	updateList;
 					
 					ps = conn.prepareStatement(sqlUpdate);
-					int index = 0;
+					int index = 1;
 					for (Field field : fields)
 	                {
-						Object value = field.get(field);
-						ps.setObject(index, value);
-						ps.setObject(index + fields.size(), value);
+						Object value = field.get(object);
+						if (value != null)
+						{
+							ps.setObject(index, value);
+							ps.setObject(index + fields.size(), value);
+						}
+						else
+						{
+							ps.setNull(index, java.sql.Types.NULL);
+							ps.setNull(index + fields.size(), java.sql.Types.NULL);
+						}
+						index++;
 	                }
 					object.onSave(ps);
 					ps.executeUpdate();
