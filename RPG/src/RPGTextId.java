@@ -17,4 +17,13 @@ public enum RPGTextId
 	healFullHealth,	// 14
 	magicHelp,		// 15
 	magicSpellList,	// 16
+	castAscend,		// 17
+	viewAscend,		// 18
+	failAscend, 	// 19
+	castDescend,	// 20
+	viewDescend,	// 21
+	failDescend,	// 22
+	castFireball,	// 23
+	viewFireball,	// 24
+	failFireball,	// 25
 }

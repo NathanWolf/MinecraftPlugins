@@ -9,6 +9,9 @@ public class RPGSpellListener extends RPGPluginListener
 	// Spells
 	private static final RPGBlinkSpell blink = new RPGBlinkSpell();
 	private static final RPGHealSpell heal = new RPGHealSpell();
+	private static final RPGAscendSpell ascend = new RPGAscendSpell();
+	private static final RPGDescendSpell descend = new RPGDescendSpell();
+	private static final RPGFireballSpell fireball = new RPGFireballSpell();
 	
 	public void enable()
 	{
@@ -70,6 +73,21 @@ public class RPGSpellListener extends RPGPluginListener
 			if (spell.equalsIgnoreCase("heal"))
 			{
 				heal.cast(player, parameters);
+			}
+			else
+			if (spell.equalsIgnoreCase("ascend")) 
+			{
+				ascend.cast(player, parameters);
+			}
+			else
+			if (spell.equalsIgnoreCase("descend"))
+			{
+				descend.cast(player, parameters);
+			}
+			else
+			if (spell.equalsIgnoreCase("fireball"))
+			{
+				fireball.cast(player, parameters);
 			}
 			else
 			{

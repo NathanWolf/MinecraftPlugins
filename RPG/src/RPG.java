@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 */
 public class RPG extends RPGPlugin
 {
-	public String version = "0.46";
+	public String version = "0.49";
 
 	private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -310,10 +310,6 @@ public class RPG extends RPGPlugin
 				log(Level.INFO, "Player " + player.getName() + " joined, new RPG profile created");
 				save();
 			}
-			else
-			{
-				log(Level.INFO, "Player " + player.getName() + " joined, RPG profile loaded");
-			}
 		}
 		return rpgPlayer;
 	}
@@ -330,16 +326,38 @@ public class RPG extends RPGPlugin
 	
 	public void sendMessage(Player player, String color, String message)
 	{
+		if (message == null)
+		{
+			return;
+		}
 		if (message.length() <= 0)
 		{
 			return;
 		}
 		player.sendMessage(PREFIX_COLOR + prefix + color + message);
 	}
-		
+	
+	public void sendMessage(Player player, String color, RPGTextId textId)
+	{
+		sendMessage(player, color, getText(textId));
+	}
+	
 	public void sendMessageToPlayersInRange(Player player, String color, String message) 
 	{
+		if (message == null)
+		{
+			return;
+		}
+		if (message.length() <= 0)
+		{
+			return;
+		}
 		sendMessageToPlayersInRange(player, color, message, DEFAULT_MESSAGE_RANGE);
+	}
+	
+	public void sendMessageToPlayersInRange(Player player, String color, RPGTextId textId) 
+	{
+		sendMessageToPlayersInRange(player, color, getText(textId));
 	}
 	
 	public void sendMessageToPlayersInRange(Player player, String color, String message, int range) 

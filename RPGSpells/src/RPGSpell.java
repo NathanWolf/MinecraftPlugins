@@ -17,7 +17,7 @@ public abstract class RPGSpell
 	
 	public void sendCastMessage(Player player, RPGTextId cast, RPGTextId view)
 	{
-		rpg.sendMessage(player, MAGIC_CAST_COLOR, rpg.getText(cast));
-		rpg.sendMessageToPlayersInRange(player, MAGIC_VIEW_COLOR, rpg.getText(view));
+		rpg.sendMessage(player, MAGIC_CAST_COLOR, cast);
+		rpg.sendMessageToPlayersInRange(player, MAGIC_VIEW_COLOR, view);
 	}
 }

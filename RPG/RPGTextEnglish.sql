@@ -115,3 +115,58 @@ SET @text = 'Available spells:';
 SET @index := @index + 1;
 INSERT INTO rpg_text (id, text) VALUES (@index, @text)
 	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+--  Cast Ascend
+SET @text = 'You ascend';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+-- Viewed someone casting ascend
+SET @text = '[caster] ascends';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+
+-- Ascend Failed
+SET @text = 'Nowhere to ascend to';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+
+--  Cast Descend
+SET @text = 'You descend';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+-- Viewed someone casting descend
+SET @text = '[caster] descends';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+-- Descend Failed
+SET @text = 'Nowhere to descend to';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+
+--  Cast Fireball
+SET @text = 'FOOM!';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+-- Viewed someone casting firebal
+SET @text = '[caster] shoots a fireball!';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
+-- Descend Failed
+SET @text = 'Fizzle!';
+SET @index := @index + 1;
+INSERT INTO rpg_text (id, text) VALUES (@index, @text)
+	ON DUPLICATE KEY UPDATE id = @index, text = @text;
+	
