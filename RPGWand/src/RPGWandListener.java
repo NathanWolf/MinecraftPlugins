@@ -4,6 +4,7 @@ public class RPGWandListener extends RPGPluginListener
 {
 	private static String WAND_COMMAND = "wand";
 	private static String WAND_LIST_COMMAND = "list";
+	private static String WAND_NEXT_COMMAND = "next";
 	private static int WAND_ITEM_ID;	
 	private boolean showHelp = false;
 	
@@ -124,6 +125,15 @@ public class RPGWandListener extends RPGPluginListener
 				else
 				{
 					// TODO
+				}
+			}
+			else
+			if (commandName.equalsIgnoreCase(WAND_NEXT_COMMAND))
+			{
+				if (wands != null)
+				{
+					wands.nextWand();
+					rpg.sendMessage(p, RPG.HEADER_COLOR, "Selected wand: " + wands.wands.currentWand.name);
 				}
 			}
 			else

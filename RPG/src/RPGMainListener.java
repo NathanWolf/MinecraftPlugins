@@ -64,7 +64,6 @@ public class RPGMainListener extends RPGPluginListener
 	
 	public void onLogin(Player player)
 	{
-		rpg.log(Level.INFO, "onLogin");
 		RPGPlayer rpgPlayer = rpg.getPlayer(player);
 		Date now = new Date();
 		rpgPlayer.setLastLogin(now);

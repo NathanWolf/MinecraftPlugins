@@ -19,6 +19,10 @@ public class RPGPlayerWand extends RPGPersisted
 		this.wands = wands;
 	}
 	
+	public void nextWand()
+	{
+		wands.nextWand();
+	}	
 	public void selectWand(RPGWandDAO wand)
 	{
 		wands.currentWand = wand;
@@ -40,11 +44,11 @@ public class RPGPlayerWand extends RPGPersisted
 			{
 				if (command.length() > 0)
 				{
-					if (command.charAt(0) == '/')
+					if (command.charAt(0) != '/')
 					{
 						command = "/cast " + command;
 					}
-					player.chat(wands.currentWand.currentCommand.command);
+					player.chat(command);
 				}
 			}
 		}
@@ -95,6 +99,7 @@ public class RPGPlayerWand extends RPGPersisted
 					for (RPGPersisted commandDAO : commandDAOList)
 					{
 						RPGWandCommandDAO command = (RPGWandCommandDAO)commandDAO;
+						if (command.wandId != wand.id) continue;
 						wand.commands.add(command);
 						if (wand.currentCommandId == null || command.id == wand.currentCommandId)
 						{

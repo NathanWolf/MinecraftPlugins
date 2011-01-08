@@ -13,6 +13,7 @@ public abstract class RPGPersisted
 	
 	protected List<Field> fields = new ArrayList<Field>();
 	protected Field idField;
+	protected Field orderByField;
 	
 	public RPGPersisted()
 	{
@@ -42,6 +43,10 @@ public abstract class RPGPersisted
 				{
 					idField = field;
 				}
+				if (persist.order())
+				{
+					orderByField = field;
+				}
 			}
 		}
 	}
@@ -68,6 +73,10 @@ public abstract class RPGPersisted
 				sqlSelect += field.getName();
 			}
 			sqlSelect += " FROM " + tableName;
+			if (orderByField != null)
+			{
+				sqlSelect += " ORDER BY " + orderByField.getName();
+			}
 			ps = conn.prepareStatement(sqlSelect);
             rs = ps.executeQuery();
             while (rs.next()) 

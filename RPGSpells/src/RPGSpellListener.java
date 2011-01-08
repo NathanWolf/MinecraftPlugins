@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.logging.Level;
 
 
@@ -7,11 +8,22 @@ public class RPGSpellListener extends RPGPluginListener
 	private boolean showHelp = false;
 	
 	// Spells
-	private static final RPGBlinkSpell blink = new RPGBlinkSpell();
-	private static final RPGHealSpell heal = new RPGHealSpell();
-	private static final RPGAscendSpell ascend = new RPGAscendSpell();
-	private static final RPGDescendSpell descend = new RPGDescendSpell();
-	private static final RPGFireballSpell fireball = new RPGFireballSpell();
+	private final HashMap<String, RPGSpell> spells = new HashMap<String, RPGSpell>();
+	
+	protected void loadSpells()
+	{
+		spells.put("blink", new RPGBlinkSpell());
+		spells.put("heal", new RPGHealSpell());
+		spells.put("ascend", new RPGAscendSpell());
+		spells.put("descend", new RPGDescendSpell());
+		spells.put("fireball", new RPGFireballSpell());
+		spells.put("more", new RPGMoreSpell());
+	}
+	
+	protected void clearSpells()
+	{
+		spells.clear();
+	}
 	
 	public void enable()
 	{
@@ -22,6 +34,8 @@ public class RPGSpellListener extends RPGPluginListener
 		SPELL_COMMAND = properties.getString("command-spell", SPELL_COMMAND);
 		showHelp = properties.getBoolean("show-spell-help", showHelp);
 
+		loadSpells();
+		
 		// Add a message to the help screen
 		if (showHelp)
 		{
@@ -35,6 +49,8 @@ public class RPGSpellListener extends RPGPluginListener
 	public void disable()
 	{
 		super.disable();
+
+		clearSpells();
 		
 		if (showHelp)
 		{
@@ -60,34 +76,16 @@ public class RPGSpellListener extends RPGPluginListener
 		}
 		if (command[0].equalsIgnoreCase("/" + SPELL_COMMAND))
 		{
-			String spell = "";
+			String spellName = "";
+			RPGSpell spell = null;
 			if (command.length > 1)
 			{
-				spell = command[1];
+				spellName = command[1];
+				spell = spells.get(spellName);
 			}
-			if (spell.equalsIgnoreCase("blink")) 
+			if (spell != null)
 			{
-				blink.cast(player, parameters);
-			}
-			else
-			if (spell.equalsIgnoreCase("heal"))
-			{
-				heal.cast(player, parameters);
-			}
-			else
-			if (spell.equalsIgnoreCase("ascend")) 
-			{
-				ascend.cast(player, parameters);
-			}
-			else
-			if (spell.equalsIgnoreCase("descend"))
-			{
-				descend.cast(player, parameters);
-			}
-			else
-			if (spell.equalsIgnoreCase("fireball"))
-			{
-				fireball.cast(player, parameters);
+				spell.cast(player, parameters);
 			}
 			else
 			{

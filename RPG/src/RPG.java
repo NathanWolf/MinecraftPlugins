@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 */
 public class RPG extends RPGPlugin
 {
-	public String version = "0.49";
+	public String version = "0.50";
 
 	private static final Logger log = Logger.getLogger("Minecraft");
 

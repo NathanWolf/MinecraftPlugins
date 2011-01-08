@@ -14,6 +14,15 @@ public class RPGPlayerWandDAO extends RPGPersisted
 		wands = new ArrayList<RPGWandDAO>();
 	}
 	
+	public void nextWand()
+	{
+		int indexOfCurrent = wands.indexOf(currentWand);
+		indexOfCurrent = (indexOfCurrent + 1) % wands.size();
+		currentWand = wands.get(indexOfCurrent);
+		currentWandId = currentWand.id;
+		dirty = true;
+	}	
+	
 	public List<RPGWandDAO> wands;
 	public RPGWandDAO currentWand;
 }

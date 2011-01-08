@@ -18,7 +18,7 @@ public class RPGWandDAO extends RPGPersisted
 	@RPGPersist
 	public Long currentCommandId;
 	
-	@RPGPersist
+	@RPGPersist(order = true)
 	public int listOrder;
 	
 	public RPGWandDAO()

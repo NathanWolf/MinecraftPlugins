@@ -8,4 +8,5 @@ import java.lang.annotation.Target;
 public @interface RPGPersist 
 {
 	boolean id() default false;
+	boolean order() default false;
 }

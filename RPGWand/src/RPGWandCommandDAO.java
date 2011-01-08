@@ -9,6 +9,6 @@ public class RPGWandCommandDAO extends RPGPersisted
 	@RPGPersist
 	public String command;
 	
-	@RPGPersist
+	@RPGPersist(order = true)
 	public int listOrder;
 }
