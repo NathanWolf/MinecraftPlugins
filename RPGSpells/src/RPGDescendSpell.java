@@ -1,7 +1,7 @@
 
 public class RPGDescendSpell extends RPGLocationSpell 
 {
-	public boolean cast(Player player, String[] parameters) 
+	public boolean onCast(String[] parameters) 
 	{
 		Location location = findPlaceToStand(player, false);
 		if (location != null) 

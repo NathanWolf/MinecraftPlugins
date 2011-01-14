@@ -62,7 +62,11 @@ public class RPGPlayer
 		for (RPGPlayer player : players.values())
 		{
 			RPGPlayerDAO dao = player.dao;
-			objects.add(dao);
+			// Sanity check
+			if (dao.name != null && dao.lastLogin != null && dao.firstLogin != null)
+			{
+				objects.add(dao);
+			}
 		}
 		RPGPlayerDAO saver = new RPGPlayerDAO();
 		saver.save(conn, tableName, objects);

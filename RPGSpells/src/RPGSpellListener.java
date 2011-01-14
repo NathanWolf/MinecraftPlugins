@@ -18,6 +18,9 @@ public class RPGSpellListener extends RPGPluginListener
 		spells.put("descend", new RPGDescendSpell());
 		spells.put("fireball", new RPGFireballSpell());
 		spells.put("more", new RPGMoreSpell());
+		spells.put("tower", new RPGTowerSpell());
+		spells.put("light", new RPGLightSpell());
+		spells.put("extend", new RPGExtendSpell());
 	}
 	
 	protected void clearSpells()

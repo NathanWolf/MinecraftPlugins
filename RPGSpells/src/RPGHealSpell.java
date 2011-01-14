@@ -3,7 +3,7 @@ public class RPGHealSpell extends RPGSpell
 {
 	private int HEAL_AMOUNT = 20;
 	
-	public boolean cast(Player player, String[] parameters) 
+	public boolean onCast(String[] parameters) 
 	{
 		int health;
 		try 

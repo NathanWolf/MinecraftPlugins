@@ -26,7 +26,7 @@ public class RPGFireballSpell extends RPGSpell
         }
     }	
 	
-	public boolean cast(Player player, String[] parameters) 
+	public boolean onCast(String[] parameters) 
 	{
 		HitBlox hit = new HitBlox(player);
 		Block target = hit.getTargetBlock();

@@ -3,11 +3,10 @@ public class RPGBlinkSpell extends RPGSpell
 {
 	private int RANGE = 0;
 	
-	public boolean cast(Player player, String[] parameters) 
+	public boolean onCast(String[] parameters) 
 	{
-		HitBlox hit = new HitBlox(player);
-		Block target = hit.getTargetBlock();
-		Block face = hit.getLastBlock();
+		Block target = getTargetBlock();
+		Block face = getLastBlock();
 		
 		if (target == null) 
 		{
